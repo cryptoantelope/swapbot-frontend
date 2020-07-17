@@ -9,6 +9,7 @@ import Header from '../../components/header'
 import Footer from '../../components/footer'
 import Home from '../Home'
 import NoMatch from '../NoMatch'
+import './App.css'
 
 
 function App() {
