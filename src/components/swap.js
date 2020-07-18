@@ -30,7 +30,22 @@ const cryptoOptions = (pre, disable) => availableCryptos.map(ac => ac !== disabl
 
 
 const Swap = props => {
-    const {mins, user, setUser, cryptoFrom, amountFrom, setAmountFrom, cryptoTo, setCryptoTo, amountTo, setAmountTo, setCryptoFrom, ratios, fetchRatios, ratiosKey, availableSwap, onSubmit} = props
+    const {mins,
+           user,
+           setUser,
+           cryptoFrom,
+           amountFrom,
+           setAmountFrom,
+           cryptoTo,
+           setCryptoTo,
+           amountTo,
+           setAmountTo,
+           setCryptoFrom,
+           ratios,
+           fetchRatios,
+           ratiosKey,
+           availableSwap,
+           onSubmit} = props
     const ratioKey = ratiosKey(cryptoFrom, cryptoTo)
 
     
@@ -57,12 +72,12 @@ const Swap = props => {
     }, [cryptoFrom, cryptoTo])
 
     useEffect(() => {
-	if(ratioKey in ratios) (setAmountTo((amountFrom * ratios[ratioKey].ratio).toFixed(8)))
+	if(ratioKey in ratios) (setAmountTo((amountFrom * ratios[ratioKey].ratio).toFixed(6)))
     }, [cryptoFrom, cryptoTo, amountFrom, ratioKey, ratios])
 
     useEffect(() => {
         setTimeout(() => {
-            if(cryptoFrom && cryptoTo && ratios[ratioKey] < Date.now()) {
+            if(cryptoFrom && cryptoTo && ratios[ratioKey].availableAt < Date.now()) {
                 fetchRatios(cryptoFrom, cryptoTo);
                 console.log('fetch')
             }
