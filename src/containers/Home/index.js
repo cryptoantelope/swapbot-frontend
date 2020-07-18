@@ -34,7 +34,7 @@ const Home = () => {
     const fetchRatios = (crypto1, crypto2) => {
         const key = ratiosKey(crypto1, crypto2)
         
-        axios.get(`/ratios/${crypto1}/${crypto2}`)
+        axios.get(`/ratio/${crypto1}/${crypto2}`)
 	    .then(res => {
 	        const r = ratios
 	        r[key] = res.data
