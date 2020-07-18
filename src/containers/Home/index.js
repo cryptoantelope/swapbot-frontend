@@ -71,7 +71,16 @@ const Home = () => {
         }, [hasError, user, amountTo])
 
     const onSubmit = () => {
-        setSwapModalOpen(true)
+        const key = ratiosKey(cryptoFrom, cryptoTo)
+        const ratio = ratios[key]
+
+        axios.post(`/swap/${cryptoFrom}/${cryptoTo}`, {ratioId: ratio.id, user: user, amount: amountFrom})
+        .then(res => {
+            setSwapModalOpen(true)
+        })
+        .catch(err => {
+            setError(true)
+        })
     }
 
     return (
