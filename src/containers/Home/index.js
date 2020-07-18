@@ -22,6 +22,7 @@ const Home = () => {
     const [cryptoTo, setCryptoTo] = useState('')
     const [amountTo, setAmountTo] = useState(0)
     const [ratios, setRatios] = useState({})
+    const [loadingRatios, setLoadingRatios] = useState(false)
     const [swapModalOpen, setSwapModalOpen] = useState(false)
     const [availaibleSwap, setAvailableSwap] = useState(false)
     
@@ -33,6 +34,7 @@ const Home = () => {
 
     const fetchRatios = (crypto1, crypto2) => {
         const key = ratiosKey(crypto1, crypto2)
+        setLoadingRatios(true)
         
         axios.get(`/ratio/${crypto1}/${crypto2}`)
 	    .then(res => {
@@ -40,9 +42,11 @@ const Home = () => {
 	        r[key] = res.data
 
             setRatios(r)
+            setLoadingRatios(false)
         })
         .catch(err => {
             setError(true)
+            setLoadingRatios(false)
         })
     }
 
@@ -113,6 +117,7 @@ const Home = () => {
                     setAmountTo={setAmountTo}
                     mins={mins}
                     ratios={ratios}
+                    loadingRatios={loadingRatios}
                     fetchRatios={fetchRatios}
                     ratiosKey={ratiosKey}
                     availableSwap={availaibleSwap}

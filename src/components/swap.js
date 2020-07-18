@@ -42,11 +42,11 @@ const Swap = props => {
            setAmountTo,
            setCryptoFrom,
            ratios,
+           loadingRatios,
            fetchRatios,
            ratiosKey,
            availableSwap,
            onSubmit} = props
-    const ratioKey = ratiosKey(cryptoFrom, cryptoTo)
 
     
     const onChangeCryptoFrom = e => {
@@ -59,8 +59,10 @@ const Swap = props => {
     }
 
 
+
     useEffect(() => {
         const getRatio = () => {
+            const ratioKey = ratiosKey(cryptoFrom, cryptoTo)
             if(ratioKey in ratios) {
 		        if(ratios[ratioKey].availableAt < Date.now()) fetchRatios(cryptoFrom, cryptoTo)
 	            } else {
@@ -71,12 +73,19 @@ const Swap = props => {
 	    if(cryptoFrom && cryptoTo) getRatio()
     }, [cryptoFrom, cryptoTo])
 
-    useEffect(() => {
-	if(ratioKey in ratios) (setAmountTo((amountFrom * ratios[ratioKey].ratio).toFixed(6)))
-    }, [cryptoFrom, cryptoTo, amountFrom, ratioKey, ratios])
+
 
     useEffect(() => {
-        setTimeout(() => {
+        const ratioKey = ratiosKey(cryptoFrom, cryptoTo)
+
+    	if(ratioKey in ratios) (setAmountTo((amountFrom * ratios[ratioKey].ratio).toFixed(6)))
+    }, [cryptoFrom, cryptoTo, amountFrom, loadingRatios])
+
+
+    useEffect(() => {
+        const ratioKey = ratiosKey(cryptoFrom, cryptoTo)
+
+        setInterval(() => {
             if(cryptoFrom && cryptoTo && ratios[ratioKey].availableAt < Date.now()) {
                 fetchRatios(cryptoFrom, cryptoTo);
                 console.log('fetch')
