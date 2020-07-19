@@ -70,7 +70,7 @@ const Swap = props => {
 	            }
             }
 
-	    if(cryptoFrom && cryptoTo) getRatio()
+	    if(cryptoFrom && cryptoTo && !loadingRatios) getRatio()
     }, [cryptoFrom, cryptoTo])
 
 
@@ -85,13 +85,14 @@ const Swap = props => {
     useEffect(() => {
         const ratioKey = ratiosKey(cryptoFrom, cryptoTo)
 
-        setInterval(() => {
-            if(cryptoFrom && cryptoTo && ratios[ratioKey].availableAt < Date.now()) {
+        const interval = setInterval(() => {
+            if(cryptoFrom && cryptoTo && ratios[ratioKey].availableAt < Date.now() && !loadingRatios) {
                 fetchRatios(cryptoFrom, cryptoTo);
-                console.log('fetch')
             }
         }, 10000);
-    });
+
+        return () => clearInterval(interval)
+    }, [cryptoFrom, cryptoTo]);
 
     return (
         <div style={styles.container} className="container">
