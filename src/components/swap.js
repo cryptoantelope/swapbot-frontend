@@ -24,7 +24,7 @@ const styles = {
     }
 }
 
-const availableCryptos = ["BTC", "LTC", "ETH", "DOGE", "TRX"]
+const availableCryptos = ["BTC", "BCH", "LTC", "ETH", "DOGE", "TRX"]
 
 const cryptoOptions = (pre, disable) => availableCryptos.map(ac => ac !== disable? <option key={`${pre}${ac}`} value={ac}>{ac}</option>:'')
 
