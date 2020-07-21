@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios'
 
-import ErrorMessage from '../../components/errorMessage'
 import TestMessage from '../../components/testMessage'
 import Swap from '../../components/swap'
 import SwapModal from '../../components/swapModal'
@@ -13,8 +12,8 @@ const styles = {
     }
 }
 
-const Home = () => {
-    const [hasError, setError] = useState(false)
+const Home = props => {
+    const {errors, setErrors} = props
     const [mins, setMins] = useState({})
     const [user, setUser] = useState('')
     const [cryptoFrom, setCryptoFrom] = useState('')
@@ -45,7 +44,8 @@ const Home = () => {
             setLoadingRatios(false)
         })
         .catch(err => {
-            setError(true)
+            const newErrors = [...errors, {msg: "Error getting ratios, please try again later", date: Date.now()}]
+            setErrors(newErrors)
             setLoadingRatios(false)
         })
     }
@@ -60,7 +60,8 @@ const Home = () => {
     
                 setMins(res.data)
             } catch {
-                setError({hasError: true})
+                const newErrors = [...errors, {msg: "Error getting some data, please try again later", date: Date.now()}]
+                setErrors(newErrors)
             }
         }
         
@@ -69,10 +70,18 @@ const Home = () => {
 
 
     useEffect(() => {
-        if(!hasError && user && amountTo)
+        if( user
+            && amountFrom
+            && amountTo
+            && mins[cryptoFrom]
+            && mins[cryptoFrom] <= Number(amountFrom)
+            && mins[cryptoTo]
+            && mins[cryptoTo] <= Number(amountTo)
+        )
             setAvailableSwap(true)
         else setAvailableSwap(false)
-        }, [hasError, user, amountTo])
+        }, [user, amountTo])
+
 
     const onSubmit = () => {
         const key = ratiosKey(cryptoFrom, cryptoTo)
@@ -83,13 +92,17 @@ const Home = () => {
             setSwapModalOpen(true)
         })
         .catch(err => {
-            setError(true)
+            const newErrors = [...errors]
+
+            if(err.response) newErrors.push({msg: err.response.data.error, date: Date.now()})
+            else newErrors.push({msg: "submit error", date: Date.now()})
+            
+            setErrors(newErrors)
         })
     }
 
     return (
         <div className="row">
-            {hasError? <ErrorMessage />:''}
             <TestMessage />
             {swapModalOpen? 
                 <SwapModal
